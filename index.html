@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puja Samagri Checklist</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f4f9; color: #333; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #d32f2f; text-align: center; border-bottom: 2px solid #d32f2f; padding-bottom: 10px; }
+        h2 { font-size: 1.2rem; color: #7b1fa2; margin-top: 25px; border-left: 4px solid #7b1fa2; padding-left: 10px; }
+        .item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee; cursor: pointer; }
+        .item:last-child { border-bottom: none; }
+        input[type="checkbox"] { margin-right: 15px; transform: scale(1.3); cursor: pointer; }
+        .checked { text-decoration: line-through; color: #888; }
+        .reset-btn { display: block; width: 100%; padding: 10px; margin-top: 20px; background: #d32f2f; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .reset-btn:hover { background: #b71c1c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Puja Samagri List</h1>
+    <p style="text-align: center; font-size: 0.9rem;">Your progress is saved automatically.</p>
+
+    <div id="list-container">
+        </div>
+
+    <button class="reset-btn" onclick="resetList()">Clear All Progress</button>
+</div>
+
+<script>
+    const samagriData = {
+        "Essentials": ["Pasupu (Turmeric) - 1/4 kg", "Kumkuma (Vermilion) - 1/4 kg", "Tamalapakulu - 200", "Vakka (Betel Nuts) - 1/4 kg", "Agarubatthulu - 1 Pkt", "Karpooram - 1 Pkt", "Gandham - 1 Box", "Pasupu Kommulu - 1 kg"],
+        "Grains & Food": ["Biyyam (Rice) - 10 kg", "Navadhanyalu - 1/2 kg", "Beelam (Jaggery) - 2 kg", "Kandulu / Pesalu / Minumulu - 1 kg each", "Nuvvulu - 1/2 kg"],
+        "Coconuts & Fruit": ["Kobbari Bondalu - 3", "Kobbari Kayalu - 25", "Arati Pandlu - 2 Dozen", "Mixed Fruits"],
+        "Lighting & Oils": ["Deepam Noone - 3 Liters", "Aavu Neyyi - 1/2 kg", "Vattulu (Wicks) - Pkt", "Matti Pramidalu - 15 total"],
+        "Others": ["Itikalu (Bricks) - 30", "Isuka (Sand) - 1 Bag", "Blouse Pieces - 9", "Towels - 3 Large", "Coins/Change - ₹200"]
+    };
+
+    const container = document.getElementById('list-container');
+
+    // Render the list
+    for (const [category, items] of Object.entries(samagriData)) {
+        const h2 = document.createElement('h2');
+        h2.textContent = category;
+        container.appendChild(h2);
+
+        items.forEach((item, index) => {
+            const id = `${category}-${index}`.replace(/\s+/g, '-');
+            const div = document.createElement('div');
+            div.className = 'item';
+            
+            const isChecked = localStorage.getItem(id) === 'true';
+            
+            div.innerHTML = `
+                <input type="checkbox" id="${id}" ${isChecked ? 'checked' : ''} onchange="toggleItem('${id}')">
+                <label for="${id}" class="${isChecked ? 'checked' : ''}">${item}</label>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function toggleItem(id) {
+        const checkbox = document.getElementById(id);
+        const label = checkbox.nextElementSibling;
+        localStorage.setItem(id, checkbox.checked);
+        
+        if (checkbox.checked) {
+            label.classList.add('checked');
+        } else {
+            label.classList.remove('checked');
+        }
+    }
+
+    function resetList() {
+        if (confirm("Are you sure you want to clear all checkboxes?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+</script>
+
+</body>
+</html>
